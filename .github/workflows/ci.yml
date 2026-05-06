@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-ci.txt
       - name: Python syntax check
         run: python -m compileall scripts analytics orchestration
       - name: Prepare dbt profile

@@ -228,6 +228,7 @@ python analytics/kpi_scorecard.py
   - `dbt deps`
   - `dbt parse`
   - KPI scorecard generation
+- CI dependency set: `requirements-ci.txt` (stable subset for runners)
 
 ## Pre-Push Verification
 

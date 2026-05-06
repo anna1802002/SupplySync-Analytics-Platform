@@ -1,0 +1,8 @@
+pandas>=2.2.0
+numpy>=1.26.0
+statsforecast>=1.7.0
+ortools>=9.10.0
+dbt-core>=1.8.0
+dbt-duckdb>=1.8.0
+dagster>=1.8.0
+dagster-webserver>=1.8.0
