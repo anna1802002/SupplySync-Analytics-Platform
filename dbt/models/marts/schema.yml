@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: kpi_supply_chain
+    description: "Core KPI mart for analyst-facing supply chain dashboards."
+    columns:
+      - name: warehouse_id
+        tests:
+          - not_null
+      - name: sku_id
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - warehouse_id
+            - sku_id
+      - name: fill_rate
+        description: "Share of demand fulfilled."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "fill_rate >= 0 and fill_rate <= 1.5"
+      - name: inventory_turnover
+        description: "Revenue proxy over average inventory."
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "inventory_turnover >= 0"
+      - name: stockout_rate
+        description: "Share of days with backorder > 0."
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "stockout_rate >= 0 and stockout_rate <= 1"

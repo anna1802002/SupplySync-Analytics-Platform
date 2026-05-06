@@ -1,7 +1,13 @@
 # SupplySync Analytics Platform
 
 ## 📊 Overview
-SupplySync Analytics Platform is a comprehensive supply chain analytics solution that provides real-time insights into inventory management, supplier performance, logistics optimization, and demand forecasting. This platform combines data analysis, visualization, and business intelligence to help organizations make data-driven decisions in their supply chain operations.
+SupplySync Analytics Platform is a supply chain analytics solution focused on business-facing KPIs and decision support.
+
+This repository now includes a modern analytics-engineering stack:
+- `dbt` models for KPI marts
+- `Dagster` orchestration for repeatable runs
+- `Great Expectations` package support for data quality checks
+- `Nixtla StatsForecast` + `OR-Tools` for forecasting and reorder recommendations
 
 ## 🎯 Key Features
 - **Inventory Analytics**: Track stock levels, turnover rates, and reorder points
@@ -10,6 +16,7 @@ SupplySync Analytics Platform is a comprehensive supply chain analytics solution
 - **Logistics Optimization**: Analyze shipping routes, delivery times, and transportation costs
 - **Real-time Dashboards**: Interactive Power BI dashboards for visual insights
 - **Cost Analysis**: Monitor procurement costs, carrying costs, and total supply chain expenses
+- **KPI Scorecard**: Generate portfolio-grade KPI quality score output (`artifacts/kpi_scorecard.json`)
 
 ## 🏗️ Project Structure
 ```
@@ -75,13 +82,30 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. **Set up database connection**
-   - Update database credentials in `config.py`
-   - Run schema creation scripts from `sql/schema.sql`
-
-5. **Run the ETL pipeline**
+4. **Generate baseline KPI files**
 ```bash
-python scripts/etl_pipeline.py
+python scripts/data_pipeline.py
+```
+
+5. **Run forecast + optimization recommendations**
+```bash
+python analytics/decision_engine.py
+```
+
+6. **Run dbt build (DuckDB local profile example)**
+```bash
+# copy dbt/profiles.yml.example to dbt/profiles.yml first
+dbt build --project-dir dbt --profiles-dir dbt
+```
+
+7. **Run Dagster orchestration UI**
+```bash
+dagster dev -w orchestration/workspace.yaml
+```
+
+8. **Generate KPI scorecard artifact**
+```bash
+python analytics/kpi_scorecard.py
 ```
 
 ## 📦 Required Python Packages
@@ -180,6 +204,40 @@ python scripts/etl_pipeline.py --source erp --target warehouse
 ### Exporting Data for Power BI
 ```bash
 python scripts/export_to_powerbi.py --format csv --output data/processed/
+```
+
+### Build KPI scorecard
+```bash
+python analytics/kpi_scorecard.py
+```
+
+## A-Grade Engineering Upgrades
+
+- `dbt` KPI mart model with stronger data tests and constraints
+- `dbt` metrics layer file: `dbt/models/marts/metrics.yml`
+- source freshness guardrails in `dbt/models/sources.yml`
+- Dagster orchestration for pipeline + dbt run chain
+- optimization and forecasting path (`StatsForecast` + `OR-Tools`)
+- scorecard artifact generation for measurable quality reporting
+
+## CI/CD
+
+- GitHub Actions workflow: `.github/workflows/ci.yml`
+- Runs:
+  - python compile checks
+  - `dbt deps`
+  - `dbt parse`
+  - KPI scorecard generation
+
+## Pre-Push Verification
+
+```bash
+python -m compileall scripts analytics orchestration
+python scripts/data_pipeline.py
+python analytics/decision_engine.py
+python analytics/kpi_scorecard.py
+dbt deps --project-dir dbt --profiles-dir dbt
+dbt parse --project-dir dbt --profiles-dir dbt
 ```
 
 ## 🤝 Contributing

@@ -1,0 +1,7 @@
+supplysync_dbt:
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/warehouse/supplysync.duckdb
+      threads: 4
+  target: dev

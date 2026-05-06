@@ -1,0 +1,20 @@
+version: 2
+
+metrics:
+  - name: avg_fill_rate
+    label: "Average Fill Rate"
+    model: ref('kpi_supply_chain')
+    description: "Average share of ordered quantity that was fulfilled."
+    calculation_method: average
+    expression: fill_rate
+    dimensions:
+      - warehouse_id
+
+  - name: avg_stockout_rate
+    label: "Average Stockout Rate"
+    model: ref('kpi_supply_chain')
+    description: "Average stockout days ratio across SKUs."
+    calculation_method: average
+    expression: stockout_rate
+    dimensions:
+      - warehouse_id

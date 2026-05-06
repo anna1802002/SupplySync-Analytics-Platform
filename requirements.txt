@@ -1,0 +1,14 @@
+pandas>=2.2.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+statsforecast>=1.7.0
+ortools>=9.10.0
+duckdb>=1.0.0
+
+# Modern analytics stack
+dbt-core>=1.8.0
+dbt-duckdb>=1.8.0
+dagster>=1.8.0
+dagster-webserver>=1.8.0
+great-expectations>=1.0.0
+elementary-data>=0.16.0

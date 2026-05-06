@@ -1,0 +1,26 @@
+name: supplysync-ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Python syntax check
+        run: python -m compileall scripts analytics orchestration
+      - name: Prepare dbt profile
+        run: cp dbt/profiles.yml.example dbt/profiles.yml
+      - name: dbt deps
+        run: dbt deps --project-dir dbt --profiles-dir dbt
+      - name: dbt parse
+        run: dbt parse --project-dir dbt --profiles-dir dbt
+      - name: Build KPI scorecard artifact
+        run: python analytics/kpi_scorecard.py
